@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compileOnly project(":api")
+    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.9.3'
 }
 
 tasks.register("installPlugin", Copy) {
