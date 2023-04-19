@@ -2,6 +2,7 @@
 package org.team4131.serial.widget;
 
 import edu.wpi.first.shuffleboard.api.widget.Description;
+import edu.wpi.first.shuffleboard.api.widget.ParametrizedController;
 import edu.wpi.first.shuffleboard.api.widget.SimpleAnnotatedWidget;
 
 import javafx.fxml.FXML;
@@ -15,14 +16,17 @@ import com.fazecast.jSerialComm.SerialPort;
     dataTypes = String.class,
     summary = "Bridges string events to a local serial port"
 )
+@ParametrizedController("SerialWidget.fxml")
 public class SerialWidget extends SimpleAnnotatedWidget<String> {
+
   @FXML
   private Pane root;
   @FXML
   private Label label;
+  
   @FXML
   private void initialize() {
-    label.setText("HI");
+    label.setText("This is a label.");
   }
 
   @Override

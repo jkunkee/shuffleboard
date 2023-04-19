@@ -1,11 +1,13 @@
 
-package org.team4131.serial.widget;
+package org.team4131.serial;
 
 import edu.wpi.first.shuffleboard.api.plugin.Description;
 import edu.wpi.first.shuffleboard.api.plugin.Requires;
 import edu.wpi.first.shuffleboard.api.plugin.Plugin;
 import edu.wpi.first.shuffleboard.api.widget.ComponentType;
 import edu.wpi.first.shuffleboard.api.widget.WidgetType;
+
+import org.team4131.serial.widget.SerialWidget;
 
 import java.util.List;
 
