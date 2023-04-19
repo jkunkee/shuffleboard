@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
@@ -12,7 +13,8 @@
         <!-- Keep a 4 pixel buffer around the widget to avoid it from feeling cramped -->
         <Insets topRightBottomLeft="4"/>
     </padding>
-    <Label fx:id="LastReceived"/>
-    <Label fx:id="LastSent"/>
+    <ComboBox fx:id="PortSelector"/>
+    <Label fx:id="LastStringFromNetwork"/>
+    <Label fx:id="LastSentToSerial"/>
     <Label fx:id="SerialText"/>
 </VBox>
