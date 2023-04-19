@@ -15,8 +15,22 @@ dependencies {
     implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.9.3'
 }
 
-tasks.register("installPlugin", Copy) {
+// https://www.baeldung.com/gradle-fat-jar
+tasks.register("augmentPluginJar", Jar) {
+//    manifest {
+//        attributes 'Main-Class': "org.team4131.serial.SerialPlugin"
+//    }
+    baseName = baseName + '-withdeps'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // Also gotta filter out module_info.class or plugin loading breaks
+    // Might as well filter out the duplicate JAR too
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     from(tasks.named("jar"))
+    with jar
+}
+
+tasks.register("installPlugin", Copy) {
+    from(tasks.named("augmentPluginJar"))
     into("${System.getProperty("user.home")}/Shuffleboard/plugins")
     description = "Builds the plugin JAR and installs it in the Shuffleboard plugins directory."
     group = "Shuffleboard Plugin"

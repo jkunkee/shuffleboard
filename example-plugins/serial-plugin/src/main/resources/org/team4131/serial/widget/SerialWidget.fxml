@@ -12,5 +12,7 @@
         <!-- Keep a 4 pixel buffer around the widget to avoid it from feeling cramped -->
         <Insets topRightBottomLeft="4"/>
     </padding>
-    <Label fx:id="label"/>
+    <Label fx:id="LastReceived"/>
+    <Label fx:id="LastSent"/>
+    <Label fx:id="SerialText"/>
 </VBox>

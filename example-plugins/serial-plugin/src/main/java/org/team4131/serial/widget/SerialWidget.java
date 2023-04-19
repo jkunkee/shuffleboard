@@ -18,15 +18,30 @@ import com.fazecast.jSerialComm.SerialPort;
 )
 @ParametrizedController("SerialWidget.fxml")
 public class SerialWidget extends SimpleAnnotatedWidget<String> {
+  private String lastReceivedString;
+  private char lastSentChar = 0;
 
   @FXML
   private Pane root;
   @FXML
-  private Label label;
-  
+  private Label LastReceived;
+  @FXML
+  private Label LastSent;
+  @FXML
+  private Label SerialText;
+
   @FXML
   private void initialize() {
-    label.setText("This is a label.");
+    LastReceived.textProperty().bind(dataOrDefault.map(str -> str.toString()).map(str -> "s:'"+str+"'"));
+
+    String s = new String();
+    for (SerialPort port : SerialPort.getCommPorts()) {
+      s += port.getDescriptivePortName();
+      s += '\n';
+    }
+    SerialText.setText(s);
+    //LastReceived.setText(SerialPort.getVersion());
+    //LastSent.setText(SerialPort.getVersion());
   }
 
   @Override
