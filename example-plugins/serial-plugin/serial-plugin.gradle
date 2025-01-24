@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 repositories {
@@ -15,18 +16,9 @@ dependencies {
     implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.11.0'
 }
 
-// https://www.baeldung.com/gradle-fat-jar
-tasks.register("augmentPluginJar", Jar) {
-    archiveBaseName = archiveBaseName + '-withdeps'
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    // Gotta filter out module_info.class or plugin loading breaks
-    exclude("module-info.class")
-    with jar
-}
-
+// gradlew build :example-plugins:serial-plugin:installPlugin
 tasks.register("installPlugin", Copy) {
-    from(tasks.named("augmentPluginJar"))
+    from(tasks.named("shadowJar"))
     into("${System.getProperty("user.home")}/Shuffleboard/plugins")
     description = "Builds the plugin JAR and installs it in the Shuffleboard plugins directory."
     group = "Shuffleboard Plugin"
