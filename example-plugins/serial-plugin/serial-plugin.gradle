@@ -17,7 +17,7 @@ dependencies {
 
 // https://www.baeldung.com/gradle-fat-jar
 tasks.register("augmentPluginJar", Jar) {
-    baseName = baseName + '-withdeps'
+    archiveBaseName = archiveBaseName + '-withdeps'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     // Gotta filter out module_info.class or plugin loading breaks
