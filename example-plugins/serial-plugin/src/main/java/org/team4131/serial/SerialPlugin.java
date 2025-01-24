@@ -12,7 +12,11 @@ import org.team4131.serial.widget.SerialWidget;
 import java.util.List;
 
 @Requires(group = "edu.wpi.first.shuffleboard", name = "Base", minVersion = "1.0.0")
-@Description(group = "org.team4131.serial", name = "SerialPlugin", version = "0.0.1", summary = "Links NetworkTables events to PC-side serial events")
+@Description(
+    group = "org.team4131.serial",
+    name = "SerialPlugin",
+    version = "0.0.1",
+    summary = "Links NetworkTables events to PC-side serial events")
 
 public class SerialPlugin extends Plugin {
   @Override

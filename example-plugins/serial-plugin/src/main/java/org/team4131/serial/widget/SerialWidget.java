@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 import com.fazecast.jSerialComm.SerialPort;
 
@@ -32,36 +33,37 @@ public class SerialWidget extends SimpleAnnotatedWidget<String> {
   // no UI -> NetworkTables because the only UI widgets are for serial setup
 
   private char lastSentChar = 0;
-  SerialPort currentPort = null;
+  private SerialPort currentPort = null;
+  private final Object currentPortLock = new Object();
 
   @FXML
   private Pane root;
   @FXML
-  private ComboBox<String> PortSelector;
+  private ComboBox<String> portSelector;
   @FXML
-  private Label LastStringFromNetwork;
+  private Label lastStringFromNetwork;
   @FXML
-  private Label LastSentToSerial;
+  private Label lastSentToSerial;
   @FXML
-  private Label SerialText;
+  private Label serialText;
 
-  private void ComboBoxChangeHandler(ActionEvent event) {
+  private void comboBoxChangeHandler(ActionEvent event) {
     // concurrency?
-    if (PortSelector != event.getSource()) {
+    if (portSelector != event.getSource()) {
       return;
     }
     event.consume();
     // Find new port.
-    SerialPort newPort = SerialPort.getCommPort(PortSelector.getValue());
+    SerialPort newPort = SerialPort.getCommPort(portSelector.getValue());
     // If it's the same port, do nothing.
-    if (newPort == currentPort ||
-        (newPort != null &&
-         currentPort != null &&
-         newPort.getDescriptivePortName().equals(currentPort.getDescriptivePortName()))) {
+    if (newPort == currentPort
+        || (newPort != null
+        && currentPort != null 
+        && newPort.getDescriptivePortName().equals(currentPort.getDescriptivePortName()))) {
       return;
     }
-    synchronized (currentPort) {
-      // It's a different port, so
+    // It's a different port, so
+    synchronized (currentPortLock) {
       // If current port is not null, shut down current port
       if (currentPort != null) {
         //currentPort.removeDataListener();
@@ -78,49 +80,51 @@ public class SerialWidget extends SimpleAnnotatedWidget<String> {
     }
   }
 
-  private String LastToSerialMapper(Object o) {
+  private String lastToSerialMapper(Object o) {
     if (o == null || !String.class.isInstance(o)) {
       return "problem input";
     }
     String str = String.class.cast(o);
-    byte[] b = str.getBytes();
-    if (currentPort != null) {
-      currentPort.writeBytes(b, b.length);
+    byte[] bytes = str.getBytes(StandardCharsets.US_ASCII);
+    synchronized (currentPortLock) {
+      if (currentPort != null) {
+        currentPort.writeBytes(bytes, bytes.length);
+      }
     }
     return str;
   }
 
   @FXML
   private void initialize() {
-    PortSelector.onActionProperty();
-    PortSelector.addEventHandler(ActionEvent.ACTION, this::ComboBoxChangeHandler);
+    portSelector.onActionProperty();
+    portSelector.addEventHandler(ActionEvent.ACTION, this::comboBoxChangeHandler);
     // Set up the COM port selector
-    PortSelector.setEditable(false);
+    portSelector.setEditable(false);
     ObservableList<String> portList = FXCollections.observableArrayList();
     for (SerialPort port : SerialPort.getCommPorts()) {
       portList.add(port.getDescriptivePortName());
     }
-    PortSelector.setItems(portList);
+    portSelector.setItems(portList);
     if (portList.size() > 0) {
-      PortSelector.setValue(portList.get(0));
+      portSelector.setValue(portList.get(0));
     }
     // TODO: default to first Arduino
     // TODO: rework on serial enumeration events
 
     // Register a view of the last data seen
     // TODO: drop this?
-    LastStringFromNetwork.textProperty().bind(dataOrDefault.map(str -> "data: \""+str.toString()+"\""));
+    lastStringFromNetwork.textProperty().bind(dataOrDefault.map(str -> "data: \"" + str.toString() + "\""));
 
     // Register a view of the last data sent to the serial port
-    LastSentToSerial.textProperty().bind(dataOrDefault.map(this::LastToSerialMapper));
+    lastSentToSerial.textProperty().bind(dataOrDefault.map(this::lastToSerialMapper));
 
     // Scratch space
-    String s = new String();
+    String str = "";
     for (SerialPort port : SerialPort.getCommPorts()) {
-      s += port.getDescriptivePortName();
-      s += '\n';
+      str += port.getDescriptivePortName();
+      str += '\n';
     }
-    SerialText.setText(s);
+    serialText.setText(str);
   }
 
   @Override
