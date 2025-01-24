@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     compileOnly project(":api")
-    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.9.3'
+    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.11.0'
 }
 
 // https://www.baeldung.com/gradle-fat-jar
