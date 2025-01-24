@@ -15,7 +15,7 @@ import java.util.List;
 @Description(
     group = "org.team4131.serial",
     name = "SerialPlugin",
-    version = "0.0.1",
+    version = "0.0.2",
     summary = "Links NetworkTables events to PC-side serial events")
 
 public class SerialPlugin extends Plugin {
